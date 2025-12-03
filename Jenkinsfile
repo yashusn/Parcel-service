@@ -12,7 +12,7 @@ pipeline {
 
           env.ARTIFACT = "parcel-services-${branchSafe}-${env.BUILD_NUMBER}"
 		  
-			sh "ls /home/slave2/workspace/parcel-services-job_feature-1/target/*.jar
+			sh "ls /home/slave2/workspace/parcel-services-job_feature-1/target/*.jar"
           sh "cp /home/slave2/workspace/parcel-services-job_feature-1/target/*.jar ${env.ARTIFACT}-f1.jar"
 		  sh "cp /home/ubuntu/workspace/parcel-services-job_feature-2/target/*.jar  ${env.ARTIFACT}-f2.jar"
 		  
