@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Setup Environment') {
             steps {
-                sh 'Envsetup.sh'
+                sh './Envsetup.sh'
             }
         } 
 
