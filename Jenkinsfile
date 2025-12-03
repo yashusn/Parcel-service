@@ -22,7 +22,7 @@ pipeline {
 
         stage('Application') { 
             steps { 
-                java -jar target/simple-parcel-service-app-1.0-SNAPSHOT.jar
+                mvn spring-boot:run
             }
         }
          stage('Application-stop') { 
