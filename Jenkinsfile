@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'slave3' }
+    agent { label 'slave1' }
     stages {
         stage('Setup Environment') {
             steps {
