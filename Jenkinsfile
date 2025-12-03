@@ -10,14 +10,14 @@ pipeline {
         script {
           def branchSafe = env.BRANCH_NAME.replaceAll('[^a-zA-Z0-9_.-]', '_')
 
-          env.ARTIFACT1 = "news-app-${branchSafe}-${env.BUILD_NUMBER}-f1.jar"
-		  env.ARTIFACT2 = "news-app-${branchSafe}-${env.BUILD_NUMBER}-f2.jar"
-
-          sh "cp /home/slave2/workspace/parcel-services-job_feature-1/target/*.jar ${env.ARTIFACT1}"
-		  sh "cp /home/slave2/workspace/parcel-services-job_feature-2/target/*.jar  ${env.ARTIFACT2}"
+          env.ARTIFACT = "parcel-services-${branchSafe}-${env.BUILD_NUMBER}"
 		  
-          archiveArtifacts artifacts: "${env.ARTIFACT1}.war", fingerprint: true
-			archiveArtifacts artifacts: "${env.ARTIFACT2}", fingerprint: true
+			sh "ls /home/slave2/workspace/parcel-services-job_feature-1/target/*.jar
+          sh "cp /home/slave2/workspace/parcel-services-job_feature-1/target/*.jar ${env.ARTIFACT}-f1.jar"
+		  sh "cp /home/ubuntu/workspace/parcel-services-job_feature-2/target/*.jar ${env.ARTIFACT}-f2.jar"
+		  
+          archiveArtifacts artifacts: "${env.ARTIFACT}-f1.jar", fingerprint: true
+			archiveArtifacts artifacts: "${env.ARTIFACT}-f2.jar", fingerprint: true
         }
       }
     }
@@ -27,13 +27,13 @@ pipeline {
         withCredentials([string(credentialsId: 'JFROG_API_KEY', variable: 'JFROG_API_KEY')]) {
           sh """
             curl -f -H "X-JFrog-Art-Api: ${JFROG_API_KEY}" \
-                -T "${env.ARTIFACT1}" \
-                "${JFROG_URL}/${REPO_NAME}/${env.BRANCH_NAME}/${env.ARTIFACT1}"
+                -T "${env.ARTIFACT}-f1.jar" \
+                "${JFROG_URL}/${REPO_NAME}/${env.BRANCH_NAME}/${env.ARTIFACT}-f1.jar"
           """
 		  sh """
             curl -f -H "X-JFrog-Art-Api: ${JFROG_API_KEY}" \
-                -T "${env.ARTIFACT2}" \
-                "${JFROG_URL}/${REPO_NAME}/${env.BRANCH_NAME}/${env.ARTIFACT2}"
+                -T "${env.ARTIFACT}-f2.jar" \
+                "${JFROG_URL}/${REPO_NAME}/${env.BRANCH_NAME}/${env.ARTIFACT}-f2.jar"
           """
         }
       }
