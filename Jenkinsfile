@@ -25,5 +25,12 @@ pipeline {
                 java -jar target/simple-parcel-service-app-1.0-SNAPSHOT.jar
             }
         }
+         stage('Application-stop') { 
+            steps {
+                sleep 300
+                sh 'mvn spring-boot:stop'
+
+                        }
+        }
     }
 }
