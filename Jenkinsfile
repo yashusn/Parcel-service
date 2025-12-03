@@ -27,5 +27,13 @@ pipeline {
 
                         }
         }
+
+                stage('Application-stop') { 
+            steps {
+                sleep 300
+                sh 'mvn spring-boot:stop'
+
+                        }
+        }
     }
 }
