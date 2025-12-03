@@ -3,7 +3,8 @@ pipeline {
     stages {
         stage('Setup Environment') {
             steps {
-                sh 'envsetup2.sh.sh'
+                sh 'chmod 700 envsetup2.sh'
+                sh 'envsetup2.sh'
             }
         } 
 
