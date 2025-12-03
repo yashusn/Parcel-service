@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent { label 'slave1' }
     stages {
         stage('Setup Environment') {
             steps {
@@ -23,7 +23,7 @@ pipeline {
 
         stage('Application') { 
             steps { 
-                mvn spring-boot:run
+                sh 'mvn spring-boot:run'
             }
         }
          stage('Application-stop') { 
