@@ -30,6 +30,7 @@ pipeline {
 
 stage('Application-stop') {
     steps {
+        sleep 100
         sh '''
             PID=$(ps -ef | grep SimpleParcelServiceApp | grep -v grep | awk '{print $2}')
             if [ -n "$PID" ]; then
