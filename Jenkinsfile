@@ -27,20 +27,5 @@ pipeline {
 
                         }
         }
-
-stage('Application-stop') {
-    steps {
-        sleep 100
-        sh '''
-            PID=$(ps -ef | grep SimpleParcelServiceApp | grep -v grep | awk '{print $2}')
-            if [ -n "$PID" ]; then
-                echo "Stopping app with PID: $PID"
-                kill -9 $PID
-            else
-                echo "Application not running."
-            fi
-        '''
-    }
-}
     }
 }
