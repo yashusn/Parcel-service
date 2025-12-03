@@ -28,7 +28,7 @@ pipeline {
         }
          stage('Application-stop') { 
             steps {
-                sleep 300
+                sleep 100
                 sh 'mvn spring-boot:stop'
 
                         }
