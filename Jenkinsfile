@@ -1,8 +1,13 @@
 pipeline {
+
     agent { label 'slave3' }
     triggers {
          cron '5 * * * *' 
     }
+    	environment {
+    JFROG_URL = 'https://yashusn.jfrog.io/artifactory'
+    REPO_NAME = 'parcelservice-libs-snapshot'      // JFrog repo for feature branches
+  }
     stages {
         stage('Setup Environment') {
             steps {
@@ -41,7 +46,30 @@ pipeline {
         steps {
             // Stop the Spring Boot application gracefully
             sh 'mvn spring-boot:stop'
-    }
+              }
 	}
+      stage('Create Versioned Artifact') {
+      steps {
+        script {
+          def branchSafe = env.BRANCH_NAME.replaceAll('[^a-zA-Z0-9_.-]', '_')
+          env.ARTIFACT = "news-app-${branchSafe}-${env.BUILD_NUMBER}-${sha}.war"
+
+          sh "cp target/*.war ${env.ARTIFACT}"
+          archiveArtifacts artifacts: "${env.ARTIFACT}", fingerprint: true
+        }
+      }
+    }
+          stage('Upload to JFrog') {
+      steps {
+        withCredentials([string(credentialsId: 'JFROG_API_KEY', variable: 'JFROG_API_KEY')]) {
+          sh """
+            curl -f -H "X-JFrog-Art-Api: ${JFROG_API_KEY}" \
+                -T "${env.ARTIFACT}" \
+                "${JFROG_URL}/${REPO_NAME}/${env.BRANCH_NAME}/${env.ARTIFACT}"
+          """
+        }
+      }
+    }
+      
     }
 }
