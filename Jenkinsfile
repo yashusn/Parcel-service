@@ -29,26 +29,7 @@ pipeline {
             }
         }
 
-        stage('Application') { 
-            steps { 
-                sh 'mvn spring-boot:run &'
-
-                        }
-        }
-    stage('Wait for 5 minutes') {
-        steps {
-            // Wait for 5 minutes (simulating app running)
-            echo "App has been running for 5 minutes. Waiting..."
-            sleep(time: 5, unit: 'MINUTES')
-        }
-    }
-   stage('Stop Application') {
-        steps {
-            // Stop the Spring Boot application gracefully
-            sh 'mvn spring-boot:stop'
-              }
-	}
-      stage('Create Versioned Artifact') {
+		stage('Create Versioned Artifact') {
       steps {
         script {
           def branchSafe = env.BRANCH_NAME.replaceAll('[^a-zA-Z0-9_.-]', '_')
@@ -70,6 +51,27 @@ pipeline {
         }
       }
     }
+
+        stage('Application') { 
+            steps { 
+                sh 'mvn spring-boot:run &'
+
+                        }
+        }
+    stage('Wait for 5 minutes') {
+        steps {
+            // Wait for 5 minutes (simulating app running)
+            echo "App has been running for 5 minutes. Waiting..."
+            sleep(time: 5, unit: 'MINUTES')
+        }
+    }
+   stage('Stop Application') {
+        steps {
+            // Stop the Spring Boot application gracefully
+            sh 'mvn spring-boot:stop'
+              }
+	}
+      
       
     }
 }
