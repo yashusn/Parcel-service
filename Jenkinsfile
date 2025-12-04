@@ -33,7 +33,7 @@ pipeline {
       steps {
         script {
           def branchSafe = env.BRANCH_NAME.replaceAll('[^a-zA-Z0-9_.-]', '_')
-          env.ARTIFACT = "parcel-services-${branchSafe}-${env.BUILD_NUMBER}-${sha}.jar"
+          env.ARTIFACT = "parcel-services-${branchSafe}-${env.BUILD_NUMBER}.jar"
 
           sh "cp /home/ubuntu/workspace/parcel-services-job_main/target/*.jar ${env.ARTIFACT}"
           archiveArtifacts artifacts: "${env.ARTIFACT}", fingerprint: true
