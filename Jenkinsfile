@@ -1,41 +1,75 @@
 pipeline {
-  agent { label 'slave3' }
-	environment {
+
+    agent { label 'slave3' }
+    triggers {
+         cron '5 * * * *' 
+    }
+    	environment {
     JFROG_URL = 'https://yashusn.jfrog.io/artifactory'
     REPO_NAME = 'parcelservice-libs-snapshot'      // JFrog repo for feature branches
   }
-	stages {
-	 stage('Create Versioned Artifact') {
+    stages {
+        stage('Setup Environment') {
+            steps {
+                sh 'chmod 700 Envsetup.sh'
+                sh './Envsetup.sh'
+            }
+        } 
+
+        stage('Checkout Code') {
+            steps {
+                checkout scm
+            }
+        }
+
+
+        stage('Build') {
+            steps {
+                sh 'mvn clean install' 
+            }
+        }
+
+        stage('Application') { 
+            steps { 
+                sh 'mvn spring-boot:run &'
+
+                        }
+        }
+    stage('Wait for 5 minutes') {
+        steps {
+            // Wait for 5 minutes (simulating app running)
+            echo "App has been running for 5 minutes. Waiting..."
+            sleep(time: 5, unit: 'MINUTES')
+        }
+    }
+   stage('Stop Application') {
+        steps {
+            // Stop the Spring Boot application gracefully
+            sh 'mvn spring-boot:stop'
+              }
+	}
+      stage('Create Versioned Artifact') {
       steps {
         script {
           def branchSafe = env.BRANCH_NAME.replaceAll('[^a-zA-Z0-9_.-]', '_')
+          env.ARTIFACT = "news-app-${branchSafe}-${env.BUILD_NUMBER}-${sha}.war"
 
-          env.ARTIFACT = "parcel-services-${branchSafe}-${env.BUILD_NUMBER}"
-		  
-			sh "cp /home/ubuntu/workspace/parcel-services-job_feature-1/target/*.jar ${env.ARTIFACT}-f1.jar"
-		  sh "cp /home/ubuntu/workspace/parcel-services-job_feature-2/target/*.jar  ${env.ARTIFACT}-f2.jar"
-		  
-          archiveArtifacts artifacts: "${env.ARTIFACT}-f1.jar", fingerprint: true
-			archiveArtifacts artifacts: "${env.ARTIFACT}-f2.jar", fingerprint: true
+          sh "cp target/*.war ${env.ARTIFACT}"
+          archiveArtifacts artifacts: "${env.ARTIFACT}", fingerprint: true
         }
       }
     }
-
-    stage('Upload to JFrog') {
+          stage('Upload to JFrog') {
       steps {
         withCredentials([string(credentialsId: 'JFROG_API_KEY', variable: 'JFROG_API_KEY')]) {
           sh """
             curl -f -H "X-JFrog-Art-Api: ${JFROG_API_KEY}" \
-                -T "${env.ARTIFACT}-f1.jar" \
-                "${JFROG_URL}/${REPO_NAME}/${env.BRANCH_NAME}/${env.ARTIFACT}-f1.jar"
-          """
-		  sh """
-            curl -f -H "X-JFrog-Art-Api: ${JFROG_API_KEY}" \
-                -T "${env.ARTIFACT}-f2.jar" \
-                "${JFROG_URL}/${REPO_NAME}/${env.BRANCH_NAME}/${env.ARTIFACT}-f2.jar"
+                -T "${env.ARTIFACT}" \
+                "${JFROG_URL}/${REPO_NAME}/${env.BRANCH_NAME}/${env.ARTIFACT}"
           """
         }
       }
     }
+      
     }
 }
