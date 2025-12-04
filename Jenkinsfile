@@ -12,7 +12,7 @@ pipeline {
 
           env.ARTIFACT = "parcel-services-${branchSafe}-${env.BUILD_NUMBER}"
 		  
-			sh "scp slave2@13.203.194.75:/home/slave2/workspace/parcel-services-job_feature-1/target/*.jar ${env.ARTIFACT}-f1.jar"
+			sh "cp /home/ubuntu/workspace/parcel-services-job_feature-1/target/*.jar ${env.ARTIFACT}-f1.jar"
 		  sh "cp /home/ubuntu/workspace/parcel-services-job_feature-2/target/*.jar  ${env.ARTIFACT}-f2.jar"
 		  
           archiveArtifacts artifacts: "${env.ARTIFACT}-f1.jar", fingerprint: true
