@@ -1,10 +1,10 @@
 pipeline {
-    agent { label 'slave2' }
+    agent { label 'slave3' }
     stages {
         stage('Setup Environment') {
             steps {
-                sh 'chmod 700 envsetup2.sh'
-                sh './envsetup2.sh'
+                sh 'chmod 700 Envsetup.sh'
+                sh './Envsetup.sh'
             }
         } 
 
@@ -24,7 +24,8 @@ pipeline {
         stage('Application') { 
             steps { 
                 sh 'mvn spring-boot:run'
-            }
+
+                        }
         }
     }
 }
