@@ -14,7 +14,7 @@ pipeline {
         stage('Setup Environment') {
             steps {
                 sh 'chmod 700 Envsetup.sh'
-                sh './Envsetup.sh'
+                sh './envsetup2.sh'
             }
         } 
 
