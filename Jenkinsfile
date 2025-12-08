@@ -1,3 +1,5 @@
+@Library('pipeline_lib') _
+
 pipeline {
 
     agent { label 'slave3' }
@@ -25,7 +27,12 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'mvn clean install' 
+				script {
+                    dir('Parcel-service') { 
+                    build 'install'
+                    }
+                }
+               // sh 'mvn clean install' 
             }
         }
 
