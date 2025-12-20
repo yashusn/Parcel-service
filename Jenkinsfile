@@ -3,9 +3,9 @@
 pipeline {
 
     agent { label 'slave3' }
-    triggers {
+   /* triggers {
          cron '5 * * * *' 
-    }
+    }*/
     	environment {
     JFROG_URL = 'https://yashusn.jfrog.io/artifactory'
     REPO_NAME = 'parcelservice-libs-snapshot'      // JFrog repo for feature branches
